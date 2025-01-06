@@ -1,134 +1,104 @@
+/* eslint-disable prettier/prettier */
 import { FC } from "react";
-import { subtitle, title as titleClass } from "./primitives";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { Divider } from "@nextui-org/divider";
 import { Button } from "@nextui-org/button";
 import { Check, Trash, X } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { addFavourite, fetchMovie, removeFavourite } from "@/mocks/api";
-import { Spinner } from "@nextui-org/spinner";
+
+import { subtitle } from "./primitives";
+
+import { addFavourite, dislikeMovie, removeFavourite } from "@/mocks/api";
 
 interface MovieProps {
-  // id: string;
-  // title: string;
-  // rating: number;
-  // imageURL?: string;
-  // summary: string;
-  // isFavourite?: boolean;
-  // addToFavouritesFunc: (id: string) => void;
-  // removeFunc: (id: string) => void;
-  movieIndex: number;
-}
-
-interface MovieInterface {
-  id: string;
-  title: string;
-  rating: number;
-  imageURL: string;
-  summary: string;
-  isFavourite: boolean;
-}
-
-interface DataInterface {
-  movie: MovieInterface;
-  hasNexPage: boolean;
-  hasPrevPage: boolean;
+	id: string;
+	title: string;
+	rating: number;
+	imageURL: string;
+	summary: string;
+	status: "liked" | "disliked" | undefined;
+	slideNextFunc: () => void;
 }
 
 export const Movie: FC<MovieProps> = ({
-  // id,
-  // title,
-  // rating,
-  // imageURL,
-  // summary,
-  // isFavourite,
-  // addToFavouritesFunc,
-  // removeFunc,
-  movieIndex,
+	id,
+	title,
+	rating,
+	imageURL,
+	summary,
+	status,
+	slideNextFunc,
 }) => {
-  const { data, isLoading, error } = useQuery<DataInterface | null>({
-    queryKey: ["movie", movieIndex],
-    queryFn: () => fetchMovie(movieIndex),
-    staleTime: Infinity,
-  });
+	const handleAccept = async () => {
+		await addFavourite(id);
+		slideNextFunc();
+	};
 
-  if (isLoading) {
-    return (
-      <div className="flex w-full h-full items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+	const handleRemove = async () => {
+		await removeFavourite(id);
+	};
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+	const handleReject = async () => {
+		await dislikeMovie(id);
+	};
 
-  if (data?.movie === null) {
-    return <p>no data</p>;
-  }
-
-  console.log(`movie number ${movieIndex} data`, data);
-  return (
-    <section className="flex flex-col gap-10">
-      <Card className="mx-auto w-[256px] sm:w-[400px]">
-        <CardHeader className="h-24">
-          <span className={subtitle()}>
-            {data?.movie.title} ({data?.movie.rating}/10)
-          </span>
-        </CardHeader>
-        <Divider />
-        <CardBody className="items-center justify-center h-96">
-          <Image
-            src={data?.movie.imageURL}
-            alt={`Cover image of ${data?.movie.title}`}
-            height={300}
-            className="object-cover"
-          />
-        </CardBody>
-        <Divider />
-        <CardFooter
-          className={
-            data?.movie.isFavourite ? "" : "grid grid-cols-2 gap-3 h-20"
-          }
-        >
-          {data?.movie.isFavourite ? (
-            <Button
-              size="md"
-              radius="full"
-              color="danger"
-              endContent={<Trash size={18} />}
-              onPressEnd={() => removeFavourite(data?.movie.id)}
-              className="mx-auto"
-            >
-              Remove
-            </Button>
-          ) : (
-            <>
-              <Button
-                size="sm"
-                radius="full"
-                color="success"
-                endContent={<Check size={18} />}
-                onPressEnd={() => addFavourite(data?.movie.id!)}
-              >
-                Accept
-              </Button>
-              <Button
-                size="sm"
-                radius="full"
-                color="danger"
-                endContent={<X size={18} />}
-              >
-                Reject
-              </Button>
-            </>
-          )}
-        </CardFooter>
-      </Card>
-      <p className="text-left max-w-lg mx-auto">{data?.movie.summary}</p>
-    </section>
-  );
+	return (
+		<section className="flex flex-col gap-10">
+			<Card className="mx-auto w-[256px] sm:w-[400px]">
+				<CardHeader className="h-28">
+					<span className={subtitle()}>
+						{title} ({rating}/10)
+					</span>
+				</CardHeader>
+				<Divider />
+				<CardBody className="items-center justify-center h-96">
+					<Image
+						alt={`Cover image of ${title}`}
+						className="object-cover"
+						height={300}
+						src={imageURL}
+					/>
+				</CardBody>
+				<Divider />
+				<CardFooter
+					className={
+						status === "liked"
+							? "h-24"
+							: "grid grid-cols-2 gap-3 h-24"
+					}>
+					{status === "liked" ? (
+						<Button
+							className="mx-auto"
+							color="danger"
+							endContent={<Trash size={18} />}
+							radius="full"
+							size="md"
+							onPressEnd={handleRemove}>
+							Remove
+						</Button>
+					) : (
+						<>
+							<Button
+								color="success"
+								endContent={<Check size={18} />}
+								radius="full"
+								size="md"
+								onPressEnd={handleAccept}>
+								Accept
+							</Button>
+							<Button
+								color="danger"
+								endContent={<X size={18} />}
+								radius="full"
+								size="md"
+								onPressEnd={handleReject}>
+								Reject
+							</Button>
+						</>
+					)}
+				</CardFooter>
+			</Card>
+			<p className="text-left max-w-lg mx-auto">{summary}</p>
+		</section>
+	);
 };
