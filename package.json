@@ -1,5 +1,5 @@
 {
-  "name": "next-app-template",
+  "name": "movies-tinder",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -50,6 +50,7 @@
     "@typescript-eslint/eslint-plugin": "8.11.0",
     "@typescript-eslint/parser": "8.11.0",
     "autoprefixer": "10.4.19",
+    "cypress": "^13.17.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.0.4",
     "eslint-config-prettier": "9.1.0",

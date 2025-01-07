@@ -22,7 +22,7 @@ export const FavouriteMovie: FC<FavouriteMovieProps> = ({
   removeFunc,
 }) => {
   return (
-    <Card className="w-full">
+    <Card className="w-full" data-cy="favourite-movie">
       <CardHeader className="h-24">
         <span className={subtitle()}>
           {title} ({rating}/10)
