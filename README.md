@@ -19,7 +19,8 @@ A sleek and interactive movie browsing application that allows users to swipe th
 - **Frameworks & Languages:** Next.js, TypeScript  
 - **UI & Interactions:** Swiper, Lucide Icons, NextUI  
 - **Notifications:** React Hot Toast  
-- **Mock API:** Mock Service Worker (MSW)  
+- **Mock API:** Mock Service Worker (MSW)
+- **Tests:** Cypress 
 
 ---
 
@@ -68,6 +69,42 @@ yarn dev
 ```
 
 Open the application in your browser at http://localhost:3000.
+
+---
+
+## 🧪 Tests
+
+#### 1. Start dev server on port 3000
+
+npm:
+
+```bash
+npm run dev
+```
+
+Yarn:
+
+```bash
+yarn dev
+```
+
+#### 2. Run tests
+
+npm:
+
+```bash
+npm run test
+```
+or in the browser
+
+```bash
+npx cypress open
+```
+
+
+
+---
+
 
 #### 🧑‍💻 How It Works
 Swipe or Reject: Swiping left (from right to left) or clicking the "Reject" button removes a movie from the list, marking it as disliked.  
