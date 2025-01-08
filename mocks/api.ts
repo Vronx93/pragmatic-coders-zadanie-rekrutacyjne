@@ -66,7 +66,7 @@ export const addFavourite = async (movieId: string) => {
         };
       }
     );
-
+    queryClient.invalidateQueries({ queryKey: ["favourites"] });
     toast.success("Added to favourites");
   } else {
     toast.error("An error occured. Try again please.");
